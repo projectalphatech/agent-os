@@ -7,6 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![Twitter](https://img.shields.io/twitter/follow/projectalpha.tech?style=social)](https://twitter.com/projectalpha.tech)
+[![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=social&logo=facebook)](https://www.facebook.com/profile.php?id=61591609439773)
 
 *Most multi-agent frameworks treat agents as generic workers. This is how you give them **specialized roles**, **structured briefs**, and **verification gates**.*
 
@@ -197,7 +198,7 @@ PRs welcome! Read the [patterns](docs/) first, then open an issue to discuss bef
 
 ## 📄 License
 
-MIT © [Project Alpha Tech](https://projectalpha.tech)
+MIT © [Project Alpha Tech](https://projectalpha.tech/en)
 
 ---
 
