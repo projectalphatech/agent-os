@@ -8,6 +8,12 @@
 
 > "2026 will be the Year of Multi-Agent Systems" — Deloitte, 2026 Tech Predictions
 
+## 📸 Demo
+
+![Agent OS Agent Diagram](https://github.com/projectalphatech/agent-os/blob/main/assets/agent-diagram.png)
+
+<!-- Placeholder image — replace with a real diagram of your agent topology -->
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com)
@@ -214,6 +220,16 @@ These patterns are framework-agnostic. They've been implemented on Hermes Agent 
 ## 🤝 Contributing
 
 PRs welcome! Read the [patterns](docs/) first, then open an issue to discuss before submitting.
+
+---
+
+## 🔗 Part of the Project Alpha ecosystem
+
+- [agent-os](https://github.com/projectalphatech/agent-os) — the operating system for coordinating specialized AI agents
+- [structured-delegation](https://github.com/projectalphatech/structured-delegation) — delegation briefs + anti-patterns that prevent build failures
+- [arabic-edge-pdf](https://github.com/projectalphatech/arabic-edge-pdf) — Arabic PDF generation at the edge, zero tofu, zero libraries
+- [gps-cluster-engine](https://github.com/projectalphatech/gps-cluster-engine) — group GPS points by proximity with capacity constraints
+- [nextjs-cloudflare-deploy](https://github.com/projectalphatech/nextjs-cloudflare-deploy) — the definitive Next.js + Cloudflare Workers deployment guide
 
 ---
 
