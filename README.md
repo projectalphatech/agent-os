@@ -11,9 +11,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Stars](https://img.shields.io/github/stars/projectalphatech/agent-os?style=social)](https://github.com/projectalphatech/agent-os)
 
-[Quick Start](#-quick-start) •
-[Skills](#-skills) •
-[Integrations](#-integrations) •
+[Quick Start](#quick-start) •
+[Skills](#skills) •
+[Integrations](#integrations) •
 [Docs](docs/)
 
 </div>
@@ -170,7 +170,7 @@ Scheduled tasks that dedupe against previous output — report what changed, not
 
 ---
 
-## 🧩 Skills
+## Skills
 
 Skills are reusable capabilities that plug into any agent-os installation:
 
@@ -180,7 +180,7 @@ Skills are reusable capabilities that plug into any agent-os installation:
 | **[arabic-edge-pdf](https://github.com/projectalphatech/arabic-edge-pdf)** | Arabic PDF generation at the edge | Generating RTL PDFs for Arabic clients |
 | **[gps-cluster-engine](https://github.com/projectalphatech/gps-cluster-engine)** | GPS clustering with capacity constraints | Building dispatch or logistics systems |
 
-## 🔌 Integrations
+## Integrations
 
 Agent-os integrates with the tools you already use:
 
@@ -193,7 +193,7 @@ Agent-os integrates with the tools you already use:
 | **[D1](https://developers.cloudflare.com/d1/)** | Edge SQLite database | ✅ Global Read Replication |
 | **[Workers Workflows](https://developers.cloudflare.com/workflows/)** | Durable execution | ✅ Multi-step orchestration |
 
-## 🔍 Why verification gates?
+## Why verification gates?
 
 Agent accuracy on structured benchmarks rose from 12% to 66.3% in one year — but agents still fail ~1 in 3 tasks. The gap drives everything we build.
 
