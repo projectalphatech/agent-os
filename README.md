@@ -2,289 +2,212 @@
 
 # agent-os
 
-**The operating system for coordinating specialized AI agents.**
+**An operating system for coordinating specialized AI agents.**
 
-*Not generic workers. Not chatbots. A team of specialists with structured briefs, verification gates, and memory that survives sessions.*
+Structured briefs. Verification gates. Memory that survives sessions.
 
-> "2026 will be the Year of Multi-Agent Systems" — Deloitte, 2026 Tech Predictions
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Stars](https://img.shields.io/github/stars/projectalphatech/agent-os?style=social)](https://github.com/projectalphatech/agent-os)
-
-[Quick Start](#quick-start) •
-[Skills](#skills) •
-[Integrations](#integrations) •
-[Docs](docs/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Docs](https://img.shields.io/badge/docs-patterns-black.svg)](./docs)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 
 </div>
 
 ---
 
-## The problem
+Most multi-agent frameworks treat agents as interchangeable workers: you describe a task, an agent reports success, and you discover later that the work was never done. `agent-os` is a set of patterns for the opposite approach — narrow specialists, explicit contracts, and completion that has to be proven rather than claimed.
 
-Most multi-agent frameworks treat agents as **generic workers**.
+It is framework-agnostic. There is nothing to install; these are documented patterns you implement in whatever agent runtime you already use.
 
-You say: *"Build me a travel booking system."*
-The agent says: *"Done!"*
-You check: It's a TODO app with a different label.
+## Contents
 
-**The issue:** No structure. No verification. No memory. No specialization.
+- [Why this exists](#why-this-exists)
+- [How it works](#how-it-works)
+- [Core patterns](#core-patterns)
+- [Usage](#usage)
+- [Skills](#skills)
+- [Integrations](#integrations)
+- [Prior art](#prior-art)
+- [Contributing](#contributing)
+- [License](#license)
 
----
+## Why this exists
 
-## The solution
+Three failures show up repeatedly when delegating real work to agents:
 
-**agent-os** gives you:
+| Failure | What it looks like |
+| --- | --- |
+| Unverified completion | The agent reports success. The build was never run. |
+| Scope drift | A narrow task quietly becomes a refactor of unrelated code. |
+| Lost context | Every session starts from zero; the same corrections get repeated. |
 
-| Feature | What it does |
-|---|---|
-| **Specialized roles** | Researcher, Builder, Commercial Analyst, Orchestrator — each with distinct tools and boundaries |
-| **Structured briefs** | Not "do this" — but "do this, with these constraints, these acceptance criteria, and stop if X" |
-| **Verification gates** | Agents must prove completion with evidence. No claims without proof. |
-| **Persistent memory** | Cross-session continuity. Confidence levels. Source-of-truth hierarchy. |
-| **Delegation contracts** | Objective, scope, constraints, validation, stop conditions — all in one brief |
+`agent-os` addresses each with a specific mechanism: verification gates, delegation contracts, and persistent memory.
 
----
+## How it works
 
-## Architecture
+Work flows through an orchestrator that never executes tasks itself. It plans, delegates to a specialist, then independently validates the result before reporting back.
 
 ```
-                    ┌─────────────────────────────────────┐
-                    │         ORCHESTRATOR                │
-                    │   (understands request,              │
-                    │    plans, delegates, validates)      │
-                    └──────────┬──────────────────────────┘
-                               │
-              ┌────────────────┼────────────────────┐
-              │                │                     │
-              ▼                ▼                     ▼
-     ┌────────────┐   ┌────────────┐        ┌────────────┐
-     │ RESEARCHER │   │  BUILDER   │        │ COMMERCIAL │
-     │  (Scout)   │   │  (Cursor)  │        │  (Meter)   │
-     └────────────┘   └────────────┘        └────────────┘
-              │                │                     │
-              └────────────────┼────────────────────┘
-                               │
-                               ▼
-                    ┌─────────────────────────────────────┐
-                    │         ORCHESTRATOR                │
-                    │   (reviews output, validates,       │
-                    │    reports to user)                 │
-                    └─────────────────────────────────────┘
+                    ┌──────────────────────┐
+   request ────────▶│     ORCHESTRATOR     │
+                    │  plan → delegate →   │
+   report  ◀────────│  validate → report   │
+                    └──────────┬───────────┘
+                               │  brief + acceptance criteria
+              ┌────────────────┼────────────────┐
+              ▼                ▼                ▼
+      ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+      │  RESEARCHER  │ │   BUILDER    │ │  COMMERCIAL  │
+      │ read-only    │ │ writes code  │ │ market data  │
+      └──────────────┘ └──────────────┘ └──────────────┘
+              │                │                │
+              └────────────────┴────────────────┘
+                     evidence of completion
 ```
 
----
+The critical property is that the arrow back up carries **evidence** — build output, HTTP status codes, test results — not an assertion of success.
 
-## Quick Start
+## Core patterns
 
-### 1. Define your agents
+| Pattern | Problem it solves | Reference |
+| --- | --- | --- |
+| Agent registry | Agents with unclear capabilities take on work they cannot do | [AGENT_REGISTRY_PATTERN.md](./docs/AGENT_REGISTRY_PATTERN.md) |
+| Delegation brief | Vague instructions produce vague results | [DELEGATION_PATTERN.md](./docs/DELEGATION_PATTERN.md) |
+| Memory system | Context is lost between sessions | [MEMORY_PATTERN.md](./docs/MEMORY_PATTERN.md) |
+| Scheduled continuity | Recurring jobs re-report unchanged information | [CRON_PATTERN.md](./docs/CRON_PATTERN.md) |
+
+### Verification gates
+
+A gate is the contract that makes delegation safe. Every brief declares, before work begins, how completion will be proven:
+
+```
+ACCEPTANCE CRITERIA:
+- GET /api/documents/<token> returns 200 with application/pdf
+- GET /api/documents/<invalid-token> returns 404
+
+VALIDATION:
+- npm run build exits 0
+- curl -sI $DEPLOY_URL/api/documents/$TOKEN | head -1
+```
+
+An agent that cannot produce this evidence has not finished, regardless of what it reports. Acceptance criteria written *after* the work are not gates — they are rationalizations.
+
+## Usage
+
+### 1. Define an agent
+
+Each agent needs responsibilities, hard boundaries, and an escalation path.
 
 ```markdown
-# Builder Agent
+# Builder
 
 ## Responsibilities
-- Websites, apps, dashboards, APIs
+- Application code, APIs, database schema, deployment
 
 ## Boundaries
-- Must NOT deploy to production without authority
-- Must NOT claim success without evidence
+- MUST NOT deploy to production without explicit authorization
+- MUST NOT report completion without validation output
+- MUST NOT modify files outside the declared scope
 
 ## Escalation
-If difficult technical reasoning needed → escalate to Architect
+Architecture decisions beyond the brief's scope → return to orchestrator
 ```
 
 ### 2. Write a delegation brief
 
 ```markdown
-PROJECT: Travel Booking System
-WORKSPACE: /home/adham/projects/sharm-trips/
+OBJECTIVE
+Add tokenized public document links so recipients can open a file without an account.
 
-OBJECTIVE: Add tokenized public PDF links for driver dispatch
+CONTEXT
+Documents are currently reachable only behind an authenticated admin session.
 
-REQUIREMENTS:
-- Add pdf_token column (UUID, unique)
-- Public route: /api/d/<token>/ returns PDF inline
-- WhatsApp message includes public URL
+REQUIREMENTS
+- Add a `pdf_token` column (UUID, unique) to the documents table
+- Serve GET /api/documents/<token> with Content-Disposition: inline
+- Include the resulting URL in the outbound notification
 
-CONSTRAINTS:
-- No auth on public route (token is access control)
-- Must not break existing admin PDF download
+CONSTRAINTS
+- The token is the access control; the route stays unauthenticated
+- Existing authenticated download must keep working
 
-ACCEPTANCE CRITERIA:
-- GET /api/d/<token> returns 200 with application/pdf
-- GET /api/d/<invalid-token> returns 404
+ALLOWED SCOPE
+- src/api/documents/**, src/db/schema.*, migrations/
 
-VALIDATION:
-- npx next build passes
-- curl -sI https://<worker>/api/d/<token> returns 200
+ACCEPTANCE CRITERIA
+- Valid token returns 200 with application/pdf
+- Invalid token returns 404
+- Existing admin download still returns 200
 
-STOP AND RETURN IF:
-- Database migration conflicts with schema
-- Cloudflare Browser Rendering format issue
+VALIDATION
+- npm run build exits 0
+- curl -sI on both a valid and an invalid token
+
+STOP AND RETURN IF
+- The migration conflicts with the existing schema
+- Deployment credentials are unavailable
 ```
 
-### 3. Set up memory
+### 3. Persist what should not be re-learned
 
 ```markdown
-## User Preferences
-- Prefers concise, direct communication
-- Expects evidence-based completion, not claims
+## Preferences
+- Evidence-based completion reports, not status claims
 
-## Project Standards
-- Cloudflare Workers via @opennextjs/cloudflare
-- D1 for database, never better-sqlite3
-- Arabic UI must be RTL-first
+## Standards
+- Edge deployment via Workers; no Node-native database drivers
+- RTL-first layout for Arabic interfaces
 ```
 
-### 4. Schedule with continuity
+### 4. Give recurring jobs continuity
 
 ```yaml
 schedule: "0 12 * * *"
-prompt: "Query GSC analytics, compare to last report, highlight changes"
-continuity: true  # deduplicates against previous output
+prompt: "Pull search analytics, diff against the previous report, surface only changes."
+continuity: true   # injects the prior run's output to prevent duplicate reporting
 ```
 
----
-
-## Core patterns
-
-### 1. Agent Registry
-Define WHO each agent is, their capabilities, boundaries, and escalation relationships.
-
-→ [Full pattern](docs/AGENT_REGISTRY_PATTERN.md)
-
-### 2. Delegation Brief
-Every substantial delegation uses a structured contract with objective, constraints, acceptance criteria, and stop conditions.
-
-→ [Full pattern](docs/DELEGATION_PATTERN.md)
-
-### 3. Memory System
-Conversation is temporary. Memory is persistent. Cross-session continuity with confidence levels.
-
-→ [Full pattern](docs/MEMORY_PATTERN.md)
-
-### 4. Scheduled Tasks with Continuity
-Scheduled tasks that dedupe against previous output — report what changed, not what stayed the same.
-
-→ [Full pattern](docs/CRON_PATTERN.md)
-
----
+Further examples: [research](./examples/DELEGATION_BRIEFS.md#example-1-research-brief) · [implementation](./examples/DELEGATION_BRIEFS.md#example-2-implementation-brief) · [planning](./examples/DELEGATION_BRIEFS.md#example-3-planning-brief) · [commercial](./examples/DELEGATION_BRIEFS.md#example-4-commercial-brief) · [escalation](./examples/DELEGATION_BRIEFS.md#example-5-escalation-brief)
 
 ## Skills
 
-Skills are reusable capabilities that plug into any agent-os installation:
+Self-contained capabilities that compose with the patterns above.
 
-| Skill | What | Use when |
-|---|---|---|
-| **[structured-delegation](https://github.com/projectalphatech/structured-delegation)** | Anti-pattern-safe delegation briefs | Delegating work to any AI agent |
-| **[arabic-edge-pdf](https://github.com/projectalphatech/arabic-edge-pdf)** | Arabic PDF generation at the edge | Generating RTL PDFs for Arabic clients |
-| **[gps-cluster-engine](https://github.com/projectalphatech/gps-cluster-engine)** | GPS clustering with capacity constraints | Building dispatch or logistics systems |
+| Skill | Purpose |
+| --- | --- |
+| [structured-delegation](https://github.com/projectalphatech/structured-delegation) | Delegation briefs and the anti-patterns that break them |
+| [arabic-edge-pdf](https://github.com/projectalphatech/arabic-edge-pdf) | Arabic PDF generation at the edge, without font bundling |
+| [gps-cluster-engine](https://github.com/projectalphatech/gps-cluster-engine) | Proximity clustering under capacity constraints |
+| [nextjs-cloudflare-deploy](https://github.com/projectalphatech/nextjs-cloudflare-deploy) | Next.js on Cloudflare Workers, including the dead ends |
 
 ## Integrations
 
-Agent-os integrates with the tools you already use:
+These patterns require no particular vendor. The runtimes below are the ones we have exercised in production.
 
-| Integration | What | Status |
-|---|---|---|
-| **[Cloudflare Workers](https://workers.cloudflare.com)** | Edge deployment platform | ✅ Full support |
-| **[Next.js](https://nextjs.org)** | React framework | ✅ App Router, RSC, Server Actions |
-| **[AnyDoc](https://github.com/firecrawl/anydoc)** | Multi-format document parsing | ✅ Use with arabic-edge-pdf |
-| **[Browser Rendering](https://developers.cloudflare.com/browser-rendering/)** | Headless browser at edge | ✅ PDF generation, screenshots |
-| **[D1](https://developers.cloudflare.com/d1/)** | Edge SQLite database | ✅ Global Read Replication |
-| **[Workers Workflows](https://developers.cloudflare.com/workflows/)** | Durable execution | ✅ Multi-step orchestration |
+| Integration | Role |
+| --- | --- |
+| [Cloudflare Workers](https://workers.cloudflare.com) | Edge runtime for orchestration and scheduling |
+| [D1](https://developers.cloudflare.com/d1/) | Edge SQLite for agent state and memory |
+| [Workers Workflows](https://developers.cloudflare.com/workflows/) | Durable multi-step execution |
+| [Browser Rendering](https://developers.cloudflare.com/browser-rendering/) | Headless Chrome for PDFs and screenshots |
+| [Next.js](https://nextjs.org) | Application layer for agent-facing interfaces |
+| [AnyDoc](https://github.com/firecrawl/anydoc) | Document parsing ahead of agent processing |
 
-## Why verification gates?
+## Prior art
 
-Agent accuracy on structured benchmarks rose from 12% to 66.3% in one year — but agents still fail ~1 in 3 tasks. The gap drives everything we build.
+`agent-os` is a pattern library, not a runtime, and is complementary to the frameworks below.
 
-**Verification-gated delegation reduces coordination failures by 69.6%** — explicit contracts between agents are the single most effective intervention for reliable multi-agent systems.
+| Project | Focus | Relationship |
+| --- | --- | --- |
+| [LangGraph](https://github.com/langchain-ai/langgraph) | Stateful graph execution | Use as the runtime; apply these patterns on top |
+| [AutoGen](https://github.com/microsoft/autogen) | Conversational multi-agent orchestration | Overlapping goals, different abstraction |
+| [CrewAI](https://github.com/crewAIInc/crewAI) | Role-based agent crews | Similar specialization model, no verification layer |
 
-Every agent in agent-os operates within verification gates:
-- **Brief**: Objective, constraints, acceptance criteria, stop conditions
-- **Execution**: Agent works independently
-- **Verification**: Agent proves completion with evidence
-- **Review**: Orchestrator validates independently
-
-No claims without proof.
-
----
-
-## Real results
-
-This system has shipped:
-
-| System | What it does | Stack |
-|---|---|---|
-| **Travel booking + dispatch** | GPS clustering, Arabic PDF dispatch, WhatsApp driver coordination | Next.js · Cloudflare · D1 |
-| **Industrial B2B platform** | Multi-lingual, multi-currency, edge deployment | Next.js · Cloudflare · D1 |
-| **Custom CRM** | Real-time, edge-deployed, Arabic/English | Next.js · Cloudflare · D1 |
-| **Research pipelines** | Automated repository analysis, commercial intelligence | Python · APIs |
-| **Daily analytics** | GSC monitoring, ad performance, automated reports | APIs · Cron |
-
-> Enterprise multi-agent adoption surged from 18% to 61% in one year. agent-os is built for the 61%.
-
-> By 2027, 70% of multi-agent systems will use narrow, focused roles — DruidAI. Our registry (Researcher, Builder, Commercial, Architect) is built exactly for this.
-
----
-
-## Ecosystem and related work
-
-agent-os is part of a growing multi-agent ecosystem:
-
-- [LangGraph](https://github.com/langchain-ai/langgraph) — stateful graph-based workflows
-- [AutoGen](https://github.com/microsoft/autogen) — enterprise multi-agent framework
-- [CrewAI](https://github.com/joaomdmoura/crewai) — role-based multi-agent orchestration
-- [Agno](https://github.com/agent-os/agno) — FastAPI for AI Agents (AgentOS runtime)
-
-agent-os differs by focusing on **verification-gated delegation** as the core abstraction, not just orchestration.
-
----
-
-## Adapt to your framework
-
-These patterns are framework-agnostic. They've been implemented on Hermes Agent but work with any agent system that supports:
-
-- Role definitions
-- Persistent memory
-- Tool use
-- Subprocess execution
-
----
-
-## Examples
-
-- [Research brief](examples/DELEGATION_BRIEFS.md#example-1-research-brief)
-- [Implementation brief](examples/DELEGATION_BRIEFS.md#example-2-implementation-brief)
-- [Planning brief](examples/DELEGATION_BRIEFS.md#example-3-planning-brief)
-- [Commercial brief](examples/DELEGATION_BRIEFS.md#example-4-commercial-brief)
-- [Escalation brief](examples/DELEGATION_BRIEFS.md#example-5-escalation-brief)
-
----
+The distinguishing choice here is treating **verification as the primary abstraction** rather than orchestration.
 
 ## Contributing
 
-PRs welcome! Read the [patterns](docs/) first, then open an issue to discuss before submitting.
-
----
-
-## Part of the Project Alpha ecosystem
-
-- [agent-os](https://github.com/projectalphatech/agent-os) — the operating system for coordinating specialized AI agents
-- [structured-delegation](https://github.com/projectalphatech/structured-delegation) — delegation briefs + anti-patterns that prevent build failures
-- [arabic-edge-pdf](https://github.com/projectalphatech/arabic-edge-pdf) — Arabic PDF generation at the edge, zero tofu, zero libraries
-- [gps-cluster-engine](https://github.com/projectalphatech/gps-cluster-engine) — group GPS points by proximity with capacity constraints
-- [nextjs-cloudflare-deploy](https://github.com/projectalphatech/nextjs-cloudflare-deploy) — the definitive Next.js + Cloudflare Workers deployment guide
-
----
+Read the [patterns](./docs) first, then open an issue describing the change before submitting a pull request. Pattern documents should include the failure mode being addressed, not only the recommended approach.
 
 ## License
 
 MIT © [Project Alpha Tech](https://projectalpha.tech)
-
----
-
-<div align="center">
-
-**⭐ Star this repo if you're tired of agents that claim success without proof!**
-
-</div>
