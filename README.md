@@ -6,6 +6,8 @@
 
 *Not generic workers. Not chatbots. A team of specialists with structured briefs, verification gates, and memory that survives sessions.*
 
+> "2026 will be the Year of Multi-Agent Systems" — Deloitte, 2026 Tech Predictions
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com)
@@ -183,6 +185,8 @@ This system has shipped:
 | **Custom CRM** | Real-time, edge-deployed, Arabic/English | Next.js · Cloudflare · D1 |
 | **Research pipelines** | Automated repository analysis, commercial intelligence | Python · APIs |
 | **Daily analytics** | GSC monitoring, ad performance, automated reports | APIs · Cron |
+
+> By 2027, 70% of multi-agent systems will use narrow, focused roles — DruidAI. Our registry (Researcher, Builder, Commercial, Architect) is built exactly for this.
 
 ---
 
