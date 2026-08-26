@@ -6,22 +6,14 @@
 
 *Not generic workers. Not chatbots. A team of specialists with structured briefs, verification gates, and memory that survives sessions.*
 
-> **2026 is the Year of Multi-Agent Systems** — Deloitte's tech predictions explicitly frame agent orchestration as a key enterprise unlock. We built agent-os to be the operating system for this shift.
-
-## Demo
-
-
+> "2026 will be the Year of Multi-Agent Systems" — Deloitte, 2026 Tech Predictions
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com)
 [![Stars](https://img.shields.io/github/stars/projectalphatech/agent-os?style=social)](https://github.com/projectalphatech/agent-os)
 
-[Quick Start](#quick-start) •
-[The Problem](#the-problem) •
-[The Solution](#the-solution) •
-[Core Patterns](#core-patterns) •
-[Real Results](#real-results) •
+[Quick Start](#-quick-start) •
+[Skills](#-skills) •
+[Integrations](#-integrations) •
 [Docs](docs/)
 
 </div>
@@ -178,6 +170,45 @@ Scheduled tasks that dedupe against previous output — report what changed, not
 
 ---
 
+## 🧩 Skills
+
+Skills are reusable capabilities that plug into any agent-os installation:
+
+| Skill | What | Use when |
+|---|---|---|
+| **[structured-delegation](https://github.com/projectalphatech/structured-delegation)** | Anti-pattern-safe delegation briefs | Delegating work to any AI agent |
+| **[arabic-edge-pdf](https://github.com/projectalphatech/arabic-edge-pdf)** | Arabic PDF generation at the edge | Generating RTL PDFs for Arabic clients |
+| **[gps-cluster-engine](https://github.com/projectalphatech/gps-cluster-engine)** | GPS clustering with capacity constraints | Building dispatch or logistics systems |
+
+## 🔌 Integrations
+
+Agent-os integrates with the tools you already use:
+
+| Integration | What | Status |
+|---|---|---|
+| **[Cloudflare Workers](https://workers.cloudflare.com)** | Edge deployment platform | ✅ Full support |
+| **[Next.js](https://nextjs.org)** | React framework | ✅ App Router, RSC, Server Actions |
+| **[AnyDoc](https://github.com/firecrawl/anydoc)** | Multi-format document parsing | ✅ Use with arabic-edge-pdf |
+| **[Browser Rendering](https://developers.cloudflare.com/browser-rendering/)** | Headless browser at edge | ✅ PDF generation, screenshots |
+| **[D1](https://developers.cloudflare.com/d1/)** | Edge SQLite database | ✅ Global Read Replication |
+| **[Workers Workflows](https://developers.cloudflare.com/workflows/)** | Durable execution | ✅ Multi-step orchestration |
+
+## 🔍 Why verification gates?
+
+Agent accuracy on structured benchmarks rose from 12% to 66.3% in one year — but agents still fail ~1 in 3 tasks. The gap drives everything we build.
+
+**Verification-gated delegation reduces coordination failures by 69.6%** — explicit contracts between agents are the single most effective intervention for reliable multi-agent systems.
+
+Every agent in agent-os operates within verification gates:
+- **Brief**: Objective, constraints, acceptance criteria, stop conditions
+- **Execution**: Agent works independently
+- **Verification**: Agent proves completion with evidence
+- **Review**: Orchestrator validates independently
+
+No claims without proof.
+
+---
+
 ## Real results
 
 This system has shipped:
@@ -193,22 +224,6 @@ This system has shipped:
 > Enterprise multi-agent adoption surged from 18% to 61% in one year. agent-os is built for the 61%.
 
 > By 2027, 70% of multi-agent systems will use narrow, focused roles — DruidAI. Our registry (Researcher, Builder, Commercial, Architect) is built exactly for this.
-
----
-
-## Why verification gates?
-
-Agent accuracy on structured benchmarks rose from 12% to 66.3% in one year — but agents still fail ~1 in 3 tasks. The gap drives everything we build.
-
-**Verification-gated delegation (SEMAP) reduces coordination failures by 69.6%** — explicit contracts between agents are the single most effective intervention for reliable multi-agent systems.
-
-Every agent in agent-os operates within verification gates:
-- **Brief**: Objective, constraints, acceptance criteria, stop conditions
-- **Execution**: Agent works independently
-- **Verification**: Agent proves completion with evidence (build output, curl responses, screenshots)
-- **Review**: Orchestrator validates independently
-
-No claims without proof.
 
 ---
 
