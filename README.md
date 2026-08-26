@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🤖 agent-os
+# agent-os
 
 **The operating system for coordinating specialized AI agents.**
 
@@ -8,29 +8,27 @@
 
 > **2026 is the Year of Multi-Agent Systems** — Deloitte's tech predictions explicitly frame agent orchestration as a key enterprise unlock. We built agent-os to be the operating system for this shift.
 
-## 📸 Demo
+## Demo
 
-![Agent OS Agent Diagram](https://github.com/projectalphatech/agent-os/blob/main/assets/agent-diagram.png)
 
-<!-- Placeholder image — replace with a real diagram of your agent topology -->
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com)
 [![Stars](https://img.shields.io/github/stars/projectalphatech/agent-os?style=social)](https://github.com/projectalphatech/agent-os)
 
-[Quick Start](#-quick-start) •
-[The Problem](#-the-problem) •
-[The Solution](#-the-solution) •
-[Core Patterns](#-core-patterns) •
-[Real Results](#-real-results) •
+[Quick Start](#quick-start) •
+[The Problem](#the-problem) •
+[The Solution](#the-solution) •
+[Core Patterns](#core-patterns) •
+[Real Results](#real-results) •
 [Docs](docs/)
 
 </div>
 
 ---
 
-## 🤔 The problem
+## The problem
 
 Most multi-agent frameworks treat agents as **generic workers**.
 
@@ -42,7 +40,7 @@ You check: It's a TODO app with a different label.
 
 ---
 
-## ✅ The solution
+## The solution
 
 **agent-os** gives you:
 
@@ -56,7 +54,7 @@ You check: It's a TODO app with a different label.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
                     ┌─────────────────────────────────────┐
@@ -85,7 +83,7 @@ You check: It's a TODO app with a different label.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Define your agents
 
@@ -156,7 +154,7 @@ continuity: true  # deduplicates against previous output
 
 ---
 
-## 📚 Core patterns
+## Core patterns
 
 ### 1. Agent Registry
 Define WHO each agent is, their capabilities, boundaries, and escalation relationships.
@@ -180,7 +178,7 @@ Scheduled tasks that dedupe against previous output — report what changed, not
 
 ---
 
-## 🌍 Real results
+## Real results
 
 This system has shipped:
 
@@ -198,7 +196,7 @@ This system has shipped:
 
 ---
 
-## 🔍 Why verification gates?
+## Why verification gates?
 
 Agent accuracy on structured benchmarks rose from 12% to 66.3% in one year — but agents still fail ~1 in 3 tasks. The gap drives everything we build.
 
@@ -214,7 +212,7 @@ No claims without proof.
 
 ---
 
-## 🔗 Ecosystem and related work
+## Ecosystem and related work
 
 agent-os is part of a growing multi-agent ecosystem:
 
@@ -227,7 +225,7 @@ agent-os differs by focusing on **verification-gated delegation** as the core ab
 
 ---
 
-## 🔧 Adapt to your framework
+## Adapt to your framework
 
 These patterns are framework-agnostic. They've been implemented on Hermes Agent but work with any agent system that supports:
 
@@ -238,7 +236,7 @@ These patterns are framework-agnostic. They've been implemented on Hermes Agent 
 
 ---
 
-## 📖 Examples
+## Examples
 
 - [Research brief](examples/DELEGATION_BRIEFS.md#example-1-research-brief)
 - [Implementation brief](examples/DELEGATION_BRIEFS.md#example-2-implementation-brief)
@@ -248,13 +246,13 @@ These patterns are framework-agnostic. They've been implemented on Hermes Agent 
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 PRs welcome! Read the [patterns](docs/) first, then open an issue to discuss before submitting.
 
 ---
 
-## 🔗 Part of the Project Alpha ecosystem
+## Part of the Project Alpha ecosystem
 
 - [agent-os](https://github.com/projectalphatech/agent-os) — the operating system for coordinating specialized AI agents
 - [structured-delegation](https://github.com/projectalphatech/structured-delegation) — delegation briefs + anti-patterns that prevent build failures
@@ -264,7 +262,7 @@ PRs welcome! Read the [patterns](docs/) first, then open an issue to discuss bef
 
 ---
 
-## 📄 License
+## License
 
 MIT © [Project Alpha Tech](https://projectalpha.tech)
 
