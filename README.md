@@ -2,44 +2,58 @@
 
 # 🤖 agent-os
 
-**How to coordinate specialized AI agents with structured delegation, persistent memory, and verification gates.**
+**The operating system for coordinating specialized AI agents.**
+
+*Not generic workers. Not chatbots. A team of specialists with structured briefs, verification gates, and memory that survives sessions.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![Twitter](https://img.shields.io/twitter/follow/projectalpha.tech?style=social)](https://twitter.com/projectalpha.tech)
-[![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=social&logo=facebook)](https://www.facebook.com/profile.php?id=61591609439773)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com)
+[![Stars](https://img.shields.io/github/stars/projectalphatech/agent-os?style=social)](https://github.com/projectalphatech/agent-os)
 
-*Most multi-agent frameworks treat agents as generic workers. This is how you give them **specialized roles**, **structured briefs**, and **verification gates**.*
-
-[Quick Start](#quick-start) •
-[Patterns](#core-patterns) •
-[Examples](examples/DELEGATION_BRIEFS.md) •
+[Quick Start](#-quick-start) •
+[The Problem](#-the-problem) •
+[The Solution](#-the-solution) •
+[Core Patterns](#-core-patterns) •
+[Real Results](#-real-results) •
 [Docs](docs/)
 
 </div>
 
 ---
 
-## 🤔 Why this exists
+## 🤔 The problem
 
-LangGraph, CrewAI, AutoGen — they give you *orchestration*. They don't give you:
+Most multi-agent frameworks treat agents as **generic workers**.
 
-| Feature | Other Frameworks | agent-os |
-|---|---|---|
-| **Specialized roles** | ❌ Generic workers | ✅ Distinct toolsets, boundaries, escalation paths |
-| **Structured delegation** | ❌ Vague instructions | ✅ Full contract: objective, constraints, acceptance criteria, stop conditions |
-| **Persistent memory** | ❌ Session-only | ✅ Cross-session continuity with confidence levels |
-| **Verification gates** | ❌ Trust the agent | ✅ Agents must prove completion with evidence |
-| **Scheduled tasks** | ❌ Repetitive reports | ✅ Continuity-aware deduplication |
+You say: *"Build me a travel booking system."*
+The agent says: *"Done!"*
+You check: It's a TODO app with a different label.
+
+**The issue:** No structure. No verification. No memory. No specialization.
 
 ---
 
-## 🏗️ The pattern
+## ✅ The solution
+
+**agent-os** gives you:
+
+| Feature | What it does |
+|---|---|
+| **Specialized roles** | Researcher, Builder, Commercial Analyst, Orchestrator — each with distinct tools and boundaries |
+| **Structured briefs** | Not "do this" — but "do this, with these constraints, these acceptance criteria, and stop if X" |
+| **Verification gates** | Agents must prove completion with evidence. No claims without proof. |
+| **Persistent memory** | Cross-session continuity. Confidence levels. Source-of-truth hierarchy. |
+| **Delegation contracts** | Objective, scope, constraints, validation, stop conditions — all in one brief |
+
+---
+
+## 🏗️ Architecture
 
 ```
                     ┌─────────────────────────────────────┐
                     │         ORCHESTRATOR                │
-                    │   (understands user request,         │
+                    │   (understands request,              │
                     │    plans, delegates, validates)      │
                     └──────────┬──────────────────────────┘
                                │
@@ -67,8 +81,6 @@ LangGraph, CrewAI, AutoGen — they give you *orchestration*. They don't give yo
 
 ### 1. Define your agents
 
-Create a registry with specialized roles, boundaries, and escalation paths:
-
 ```markdown
 # Builder Agent
 
@@ -83,12 +95,10 @@ Create a registry with specialized roles, boundaries, and escalation paths:
 If difficult technical reasoning needed → escalate to Architect
 ```
 
-### 2. Write delegation briefs
-
-Every substantial task gets a structured contract:
+### 2. Write a delegation brief
 
 ```markdown
-PROJECT: Sharm Trips
+PROJECT: Travel Booking System
 WORKSPACE: /home/adham/projects/sharm-trips/
 
 OBJECTIVE: Add tokenized public PDF links for driver dispatch
@@ -109,9 +119,13 @@ ACCEPTANCE CRITERIA:
 VALIDATION:
 - npx next build passes
 - curl -sI https://<worker>/api/d/<token> returns 200
+
+STOP AND RETURN IF:
+- Database migration conflicts with schema
+- Cloudflare Browser Rendering format issue
 ```
 
-### 3. Set up persistent memory
+### 3. Set up memory
 
 ```markdown
 ## User Preferences
@@ -158,14 +172,17 @@ Scheduled tasks that dedupe against previous output — report what changed, not
 
 ---
 
-## 🌍 Real-world use
+## 🌍 Real results
 
-This pattern has shipped:
+This system has shipped:
 
-- **Travel booking system** — GPS clustering, Arabic PDF dispatch, WhatsApp driver coordination
-- **Industrial B2B platform** — multi-lingual, multi-currency, Cloudflare edge deployment
-- **Research pipelines** — automated repository analysis, commercial intelligence, daily analytics reports
-- **Agent ecosystem** — specialized roles (researcher, builder, commercial analyst, escalation architect)
+| System | What it does | Stack |
+|---|---|---|
+| **Travel booking + dispatch** | GPS clustering, Arabic PDF dispatch, WhatsApp driver coordination | Next.js · Cloudflare · D1 |
+| **Industrial B2B platform** | Multi-lingual, multi-currency, edge deployment | Next.js · Cloudflare · D1 |
+| **Custom CRM** | Real-time, edge-deployed, Arabic/English | Next.js · Cloudflare · D1 |
+| **Research pipelines** | Automated repository analysis, commercial intelligence | Python · APIs |
+| **Daily analytics** | GSC monitoring, ad performance, automated reports | APIs · Cron |
 
 ---
 
@@ -198,12 +215,12 @@ PRs welcome! Read the [patterns](docs/) first, then open an issue to discuss bef
 
 ## 📄 License
 
-MIT © [Project Alpha Tech](https://projectalpha.tech/en)
+MIT © [Project Alpha Tech](https://projectalpha.tech)
 
 ---
 
 <div align="center">
 
-**⭐ Star this repo if you find it useful!**
+**⭐ Star this repo if you're tired of agents that claim success without proof!**
 
 </div>
